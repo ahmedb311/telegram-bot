@@ -1,13 +1,23 @@
 import re
 import os
+import asyncio
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 
+# 🟢 أمر البداية
 async def start(update, context):
     await update.message.reply_text(
         "أرسل لي قائمة فيها أسماء ومبالغ مثل:\n"
         "محمد 100$\nسارة 2500$\nوأنا برتبهم وبحسبلك المجموع ✅"
     )
 
+# 🔴 أمر لإطفاء البوت
+async def stopbot(update, context):
+    await update.message.reply_text("📴 جاري إيقاف البوت... إلى اللقاء 👋")
+    await asyncio.sleep(1)
+    await context.application.stop()
+    # بعدها Railway بيوقف الخدمة تلقائيًا
+
+# 🔢 ترتيب المبالغ
 async def handle_message(update, context):
     text = update.message.text
     lines = text.strip().split("\n")
@@ -43,8 +53,9 @@ async def handle_message(update, context):
 
     await update.message.reply_text(reply)
 
-# توكن للتجربة فقط - لا تستخدمه في الإنتاج
+# 🚀 تشغيل التطبيق
 app = ApplicationBuilder().token("7909729072:AAHurHOhrdm5Q117Mi4UHbQP0DE_2wARxww").build()
 app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("stopbot", stopbot))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 app.run_polling()
