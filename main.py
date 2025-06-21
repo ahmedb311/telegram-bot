@@ -39,7 +39,7 @@ async def handle_message(update, context):
 
     await update.message.reply_text(reply)
 
-app = ApplicationBuilder().token(os.environ.get("7909729072:AAHurHOhrdm5Q117Mi4UHbQP0DE_2wARxww")).build()
+app = ApplicationBuilder().token(os.environ.get("BOT_TOKEN")).build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 app.run_polling()
