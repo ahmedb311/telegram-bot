@@ -5,7 +5,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, fil
 async def start(update, context):
     await update.message.reply_text(
         "أرسل لي قائمة فيها أسماء ومبالغ مثل:\n"
-        "محمد 100$\nسارة 2500$\nوأنا برتبهم و بحسبلك المجموع ✅"
+        "محمد 100$\nسارة 2500$\nوأنا برتبهم وبحسبلك المجموع ✅"
     )
 
 async def handle_message(update, context):
@@ -30,16 +30,20 @@ async def handle_message(update, context):
     total = sum(amount for _, amount in sorted_entries)
     count = len(sorted_entries)
 
-    formatted = "\n".join([f"{name} {amount:.2f}$" for name, amount in sorted_entries])
+    formatted = "\n".join([
+        f"{name} {int(amount) if amount.is_integer() else amount}$"
+        for name, amount in sorted_entries
+    ])
+
     reply = (
         f"📋 تم العثور على {count} مبلغ.\n\n"
         f"{formatted}\n\n"
-        f"💰 المجموع الكلي: {total:.2f}$"
+        f"💰 المجموع الكلي: {int(total) if total.is_integer() else total}$"
     )
 
     await update.message.reply_text(reply)
 
-# توكن مباشر للتجربة فقط - لا تستخدمه على GitHub أو Railway
+# توكن للتجربة فقط - لا تستخدمه في الإنتاج
 app = ApplicationBuilder().token("7909729072:AAHurHOhrdm5Q117Mi4UHbQP0DE_2wARxww").build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
